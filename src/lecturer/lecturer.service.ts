@@ -13,7 +13,6 @@ export class LecturerService {
 
   async create(createLecturerDto: CreateLecturerDto): Promise<Lecturer> {
     return this.lecturerModel.create(createLecturerDto);
-    
   }
 
   async findAll(): Promise<Lecturer[]> {

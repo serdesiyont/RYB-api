@@ -137,7 +137,10 @@ describe('LecturerController', () => {
   describe('addCourse', () => {
     it('should add a course to a lecturer', async () => {
       const courseDto: CourseDto = { name: 'CS102' };
-      const updatedLecturer = { ...mockLecturer, courses: [...mockLecturer.courses, 'CS102'] };
+      const updatedLecturer = {
+        ...mockLecturer,
+        courses: [...mockLecturer.courses, 'CS102'],
+      };
       mockLecturerService.addCourse.mockResolvedValue(updatedLecturer);
       const res = mockResponse();
       await controller.addCourse(res, 'someId', courseDto);
