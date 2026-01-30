@@ -31,4 +31,5 @@ export class LecturerRating {
   comment: string;
 }
 
-export const LecturerRatingSchema = SchemaFactory.createForClass(LecturerRating);
+export const LecturerRatingSchema =
+  SchemaFactory.createForClass(LecturerRating);
