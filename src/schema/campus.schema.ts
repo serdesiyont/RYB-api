@@ -17,8 +17,6 @@ export class Campus {
   @Prop({ default: 0 })
   overallRating: number;
 
-  @Prop()
-  imageUrl: string;
 }
 
 export const CampusSchema = SchemaFactory.createForClass(Campus);
