@@ -8,12 +8,12 @@ import { Lecturer, LecturerDocument } from '../schema/lecturer.schema';
 @Injectable()
 export class LecturerService {
   constructor(
-    @InjectModel(Lecturer.name) private lecturerModel: Model<Lecturer>,
+    @InjectModel(Lecturer.name) private lecturerModel: Model<LecturerDocument>,
   ) {}
 
   async create(createLecturerDto: CreateLecturerDto): Promise<Lecturer> {
-    const createdLecturer = new this.lecturerModel(createLecturerDto);
-    return await createdLecturer.save();
+    return this.lecturerModel.create(createLecturerDto);
+    
   }
 
   async findAll(): Promise<Lecturer[]> {
