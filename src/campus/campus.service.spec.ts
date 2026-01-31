@@ -80,7 +80,9 @@ describe('CampusService', () => {
       jest.spyOn(model, 'findById').mockReturnValue({
         exec: jest.fn().mockResolvedValue(null),
       } as any);
-      await expect(service.findOne('someId')).rejects.toThrow(NotFoundException);
+      await expect(service.findOne('someId')).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 
@@ -99,7 +101,9 @@ describe('CampusService', () => {
       jest.spyOn(model, 'findByIdAndUpdate').mockReturnValue({
         exec: jest.fn().mockResolvedValue(null),
       } as any);
-      await expect(service.update('someId', {})).rejects.toThrow(NotFoundException);
+      await expect(service.update('someId', {})).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 
