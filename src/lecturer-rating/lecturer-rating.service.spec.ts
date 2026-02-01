@@ -55,7 +55,9 @@ describe('LecturerRatingService', () => {
     }).compile();
 
     service = module.get<LecturerRatingService>(LecturerRatingService);
-    model = module.get<Model<LecturerRating>>(getModelToken(LecturerRating.name));
+    model = module.get<Model<LecturerRating>>(
+      getModelToken(LecturerRating.name),
+    );
     lecturerModel = module.get<Model<Lecturer>>(getModelToken(Lecturer.name));
   });
 
@@ -110,8 +112,12 @@ describe('LecturerRatingService', () => {
       };
       const userId = '507f1f77bcf86cd799439011';
 
-      await expect(service.create(createDto, userId)).rejects.toThrow(BadRequestException);
-      await expect(service.create(createDto, userId)).rejects.toThrow('Invalid lecturer ID format');
+      await expect(service.create(createDto, userId)).rejects.toThrow(
+        BadRequestException,
+      );
+      await expect(service.create(createDto, userId)).rejects.toThrow(
+        'Invalid lecturer ID format',
+      );
     });
   });
 
@@ -167,8 +173,12 @@ describe('LecturerRatingService', () => {
     });
 
     it('should throw BadRequestException for invalid ID format', async () => {
-      await expect(service.findOne('invalidId')).rejects.toThrow(BadRequestException);
-      await expect(service.findOne('invalidId')).rejects.toThrow('Invalid rating ID format');
+      await expect(service.findOne('invalidId')).rejects.toThrow(
+        BadRequestException,
+      );
+      await expect(service.findOne('invalidId')).rejects.toThrow(
+        'Invalid rating ID format',
+      );
     });
   });
 
@@ -183,11 +193,15 @@ describe('LecturerRatingService', () => {
       const result = await service.findByLecturer('507f1f77bcf86cd799439012');
 
       expect(result).toEqual([mockLecturerRating]);
-      expect(model.find).toHaveBeenCalledWith({ lecturerId: expect.any(Types.ObjectId) });
+      expect(model.find).toHaveBeenCalledWith({
+        lecturerId: expect.any(Types.ObjectId),
+      });
     });
 
     it('should throw BadRequestException for invalid lecturer ID', async () => {
-      await expect(service.findByLecturer('invalidId')).rejects.toThrow(BadRequestException);
+      await expect(service.findByLecturer('invalidId')).rejects.toThrow(
+        BadRequestException,
+      );
     });
   });
 
@@ -203,7 +217,9 @@ describe('LecturerRatingService', () => {
       const result = await service.findByUser('507f1f77bcf86cd799439011');
 
       expect(result).toEqual([mockLecturerRating]);
-      expect(model.find).toHaveBeenCalledWith({ userId: '507f1f77bcf86cd799439011' });
+      expect(model.find).toHaveBeenCalledWith({
+        userId: '507f1f77bcf86cd799439011',
+      });
     });
   });
 
@@ -226,7 +242,10 @@ describe('LecturerRatingService', () => {
         exec: jest.fn().mockResolvedValue({}),
       } as any);
 
-      const result = await service.update('507f1f77bcf86cd799439011', updateDto);
+      const result = await service.update(
+        '507f1f77bcf86cd799439011',
+        updateDto,
+      );
 
       expect(result).toEqual(updatedRating);
     });
@@ -245,9 +264,9 @@ describe('LecturerRatingService', () => {
     });
 
     it('should throw BadRequestException for invalid ID format', async () => {
-      await expect(service.update('invalidId', { difficulty: 4 })).rejects.toThrow(
-        BadRequestException,
-      );
+      await expect(
+        service.update('invalidId', { difficulty: 4 }),
+      ).rejects.toThrow(BadRequestException);
     });
   });
 
@@ -280,7 +299,9 @@ describe('LecturerRatingService', () => {
     });
 
     it('should throw BadRequestException for invalid ID format', async () => {
-      await expect(service.remove('invalidId')).rejects.toThrow(BadRequestException);
+      await expect(service.remove('invalidId')).rejects.toThrow(
+        BadRequestException,
+      );
     });
   });
 });

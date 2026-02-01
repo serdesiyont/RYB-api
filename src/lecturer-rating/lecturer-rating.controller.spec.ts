@@ -79,7 +79,10 @@ describe('LecturerRatingController', () => {
 
       const result = await controller.create(createDto, mockRequest);
 
-      expect(service.create).toHaveBeenCalledWith(createDto, '507f1f77bcf86cd799439011');
+      expect(service.create).toHaveBeenCalledWith(
+        createDto,
+        '507f1f77bcf86cd799439011',
+      );
       expect(result).toEqual(mockLecturerRating);
     });
 
@@ -150,9 +153,13 @@ describe('LecturerRatingController', () => {
       const mockRatings = [mockLecturerRating];
       mockLecturerRatingService.findByLecturer.mockResolvedValue(mockRatings);
 
-      const result = await controller.findByLecturer('507f1f77bcf86cd799439012');
+      const result = await controller.findByLecturer(
+        '507f1f77bcf86cd799439012',
+      );
 
-      expect(service.findByLecturer).toHaveBeenCalledWith('507f1f77bcf86cd799439012');
+      expect(service.findByLecturer).toHaveBeenCalledWith(
+        '507f1f77bcf86cd799439012',
+      );
       expect(result).toEqual(mockRatings);
     });
   });
@@ -164,7 +171,9 @@ describe('LecturerRatingController', () => {
 
       const result = await controller.findByUser('507f1f77bcf86cd799439011');
 
-      expect(service.findByUser).toHaveBeenCalledWith('507f1f77bcf86cd799439011');
+      expect(service.findByUser).toHaveBeenCalledWith(
+        '507f1f77bcf86cd799439011',
+      );
       expect(result).toEqual(mockRatings);
     });
   });
@@ -183,9 +192,15 @@ describe('LecturerRatingController', () => {
 
       mockLecturerRatingService.update.mockResolvedValue(updatedRating);
 
-      const result = await controller.update('507f1f77bcf86cd799439011', updateDto);
+      const result = await controller.update(
+        '507f1f77bcf86cd799439011',
+        updateDto,
+      );
 
-      expect(service.update).toHaveBeenCalledWith('507f1f77bcf86cd799439011', updateDto);
+      expect(service.update).toHaveBeenCalledWith(
+        '507f1f77bcf86cd799439011',
+        updateDto,
+      );
       expect(result).toEqual(updatedRating);
     });
   });

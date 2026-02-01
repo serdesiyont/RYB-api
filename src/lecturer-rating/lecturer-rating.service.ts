@@ -1,7 +1,14 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
-import { LecturerRating, LecturerRatingDocument } from '../schema/lecturer-rating.schema';
+import {
+  LecturerRating,
+  LecturerRatingDocument,
+} from '../schema/lecturer-rating.schema';
 import { Lecturer, LecturerDocument } from '../schema/lecturer.schema';
 import { CreateLecturerRatingDto } from './dto/create-lecturer-rating.dto';
 import { UpdateLecturerRatingDto } from './dto/update-lecturer-rating.dto';
@@ -15,7 +22,10 @@ export class LecturerRatingService {
     private lecturerModel: Model<LecturerDocument>,
   ) {}
 
-  async create(createLecturerRatingDto: CreateLecturerRatingDto, userId: string): Promise<LecturerRating> {
+  async create(
+    createLecturerRatingDto: CreateLecturerRatingDto,
+    userId: string,
+  ): Promise<LecturerRating> {
     try {
       // Validate and convert lecturerId to ObjectId
       if (!Types.ObjectId.isValid(createLecturerRatingDto.lecturerId)) {
@@ -35,7 +45,10 @@ export class LecturerRatingService {
 
       return rating;
     } catch (error) {
-      if (error instanceof BadRequestException || error instanceof NotFoundException) {
+      if (
+        error instanceof BadRequestException ||
+        error instanceof NotFoundException
+      ) {
         throw error;
       }
       throw new BadRequestException('Failed to create lecturer rating');
@@ -70,7 +83,10 @@ export class LecturerRatingService {
 
       return rating;
     } catch (error) {
-      if (error instanceof BadRequestException || error instanceof NotFoundException) {
+      if (
+        error instanceof BadRequestException ||
+        error instanceof NotFoundException
+      ) {
         throw error;
       }
       throw new BadRequestException('Failed to fetch lecturer rating');
@@ -102,7 +118,10 @@ export class LecturerRatingService {
     }
   }
 
-  async update(id: string, updateLecturerRatingDto: UpdateLecturerRatingDto): Promise<LecturerRating> {
+  async update(
+    id: string,
+    updateLecturerRatingDto: UpdateLecturerRatingDto,
+  ): Promise<LecturerRating> {
     try {
       if (!Types.ObjectId.isValid(id)) {
         throw new BadRequestException('Invalid rating ID format');
@@ -122,7 +141,10 @@ export class LecturerRatingService {
 
       return rating;
     } catch (error) {
-      if (error instanceof BadRequestException || error instanceof NotFoundException) {
+      if (
+        error instanceof BadRequestException ||
+        error instanceof NotFoundException
+      ) {
         throw error;
       }
       throw new BadRequestException('Failed to update lecturer rating');
@@ -148,17 +170,24 @@ export class LecturerRatingService {
 
       return rating;
     } catch (error) {
-      if (error instanceof BadRequestException || error instanceof NotFoundException) {
+      if (
+        error instanceof BadRequestException ||
+        error instanceof NotFoundException
+      ) {
         throw error;
       }
       throw new BadRequestException('Failed to delete lecturer rating');
     }
   }
 
-  private async updateLecturerRating(lecturerId: Types.ObjectId): Promise<void> {
+  private async updateLecturerRating(
+    lecturerId: Types.ObjectId,
+  ): Promise<void> {
     try {
       // Fetch all ratings for this lecturer
-      const ratings = await this.lecturerRatingModel.find({ lecturerId }).exec();
+      const ratings = await this.lecturerRatingModel
+        .find({ lecturerId })
+        .exec();
 
       if (ratings.length === 0) {
         // No ratings, set to 0

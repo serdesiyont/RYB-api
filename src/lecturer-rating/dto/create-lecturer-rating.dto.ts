@@ -1,4 +1,12 @@
-import { IsNotEmpty, IsString, IsNumber, Min, Max, IsBoolean, IsOptional } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsString,
+  IsNumber,
+  Min,
+  Max,
+  IsBoolean,
+  IsOptional,
+} from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateLecturerRatingDto {
@@ -12,7 +20,11 @@ export class CreateLecturerRatingDto {
   @IsString()
   course: string;
 
-  @ApiProperty({ description: 'Difficulty rating (1-5)', minimum: 1, maximum: 5 })
+  @ApiProperty({
+    description: 'Difficulty rating (1-5)',
+    minimum: 1,
+    maximum: 5,
+  })
   @IsNumber()
   @Min(1)
   @Max(5)
