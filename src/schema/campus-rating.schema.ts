@@ -1,17 +1,15 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
-import { User } from './user.schema';
-import { Campus } from './campus.schema';
 
 export type CampusRatingDocument = CampusRating & Document;
 
 @Schema({ timestamps: true })
 export class CampusRating {
-  @Prop({ type: Types.ObjectId, ref: 'User', required: true })
-  userId: User;
+  @Prop({ type: String, ref: 'user', required: true })
+  userId: string;
 
   @Prop({ type: Types.ObjectId, ref: 'Campus', required: true })
-  campusId: Campus;
+  campusId: Types.ObjectId;
 
   @Prop({ required: true })
   reputation: number;

@@ -17,6 +17,8 @@ export class Campus {
   @Prop({ default: 0 })
   overallRating: number;
 
+  @Prop({ default: 0 })
+  count: number;
 }
 
 export const CampusSchema = SchemaFactory.createForClass(Campus);
