@@ -3,6 +3,7 @@ import { MongooseModule, getConnectionToken } from '@nestjs/mongoose';
 import { LecturerModule } from './lecturer/lecturer.module';
 import { CampusModule } from './campus/campus.module';
 import { CampusRatingModule } from './campus-rating/campus-rating.module';
+import { LecturerRatingModule } from './lecturer-rating/lecturer-rating.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthModule } from '@thallesp/nestjs-better-auth';
 import { Connection } from 'mongoose';
@@ -54,6 +55,7 @@ import { createAuthConfig } from './auth/auth.config';
     LecturerModule,
     CampusModule,
     CampusRatingModule,
+    LecturerRatingModule,
   ],
   controllers: [],
   providers: [],
