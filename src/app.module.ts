@@ -4,9 +4,8 @@ import { LecturerModule } from './lecturer/lecturer.module';
 import { CampusModule } from './campus/campus.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthModule } from '@thallesp/nestjs-better-auth';
-import { betterAuth } from 'better-auth';
-import { mongodbAdapter } from 'better-auth/adapters/mongodb';
 import { Connection } from 'mongoose';
+import { createAuthConfig } from './auth/auth.config';
 
 @Module({
   imports: [
@@ -21,18 +20,35 @@ import { Connection } from 'mongoose';
       inject: [ConfigService],
     }),
     AuthModule.forRootAsync({
-      useFactory: (connection: Connection) => {
+      useFactory: (connection: Connection, configService: ConfigService) => {
+        const smtpPort = configService.get<number>('SMTP_PORT') || 587;
+        const smtpSecure = smtpPort === 465; // Port 465 uses SSL, port 587 uses STARTTLS
+
         return {
-          auth: betterAuth({
-            database: mongodbAdapter(connection.db!),
-            emailAndPassword: {
-              enabled: true,
+          auth: createAuthConfig(
+            connection,
+            {
+              host: configService.get<string>('SMTP_HOST')!,
+              port: smtpPort,
+              secure: smtpSecure,
+              requireTLS: !smtpSecure, // Use STARTTLS for port 587
+              auth: {
+                user: configService.get<string>('SMTP_USER')!,
+                pass: configService.get<string>('SMTP_PASS')!,
+              },
+              tls: {
+                rejectUnauthorized:
+                  configService.get<boolean>('SMTP_REJECT_UNAUTHORIZED') !==
+                  false,
+              },
             },
-          }),
+            configService.get<string>('EMAIL_FROM')!,
+            configService.get<string>('BASE_URL') || 'http://localhost:3000',
+          ),
           disableGlobalAuthGuard: true,
         };
       },
-      inject: [getConnectionToken()],
+      inject: [getConnectionToken(), ConfigService],
     }),
     LecturerModule,
     CampusModule,
