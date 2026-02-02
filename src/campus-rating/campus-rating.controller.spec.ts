@@ -48,9 +48,9 @@ describe('CampusRatingController', () => {
   };
 
   const mockRequest = (userId?: string) => {
-    const req: Partial<Request> = {};
+    const req: Partial<Request> & { user?: { id: string } } = {};
     if (userId) {
-      (req as any).user = { id: userId };
+      req.user = { id: userId };
     }
     return req as Request;
   };

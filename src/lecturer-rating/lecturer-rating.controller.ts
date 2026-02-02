@@ -13,6 +13,11 @@ import { LecturerRatingService } from './lecturer-rating.service';
 import { CreateLecturerRatingDto } from './dto/create-lecturer-rating.dto';
 import { UpdateLecturerRatingDto } from './dto/update-lecturer-rating.dto';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { Request } from 'express';
+
+interface RequestWithUser extends Request {
+  user?: { id: string };
+}
 
 @ApiTags('lecturer-ratings')
 @Controller('lecturer-ratings')
@@ -29,9 +34,9 @@ export class LecturerRatingController {
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   async create(
     @Body() createLecturerRatingDto: CreateLecturerRatingDto,
-    @Req() req: any,
+    @Req() req: RequestWithUser,
   ) {
-    const user = (req as any).user;
+    const user = req.user;
     if (!user || !user.id) {
       throw new UnauthorizedException(
         'User must be authenticated to create a rating',

@@ -5,6 +5,11 @@ import { CreateLecturerRatingDto } from './dto/create-lecturer-rating.dto';
 import { UpdateLecturerRatingDto } from './dto/update-lecturer-rating.dto';
 import { UnauthorizedException } from '@nestjs/common';
 import { Types } from 'mongoose';
+import { Request } from 'express';
+
+interface RequestWithUser extends Request {
+  user?: { id: string };
+}
 
 const mockLecturerRating = {
   _id: new Types.ObjectId('507f1f77bcf86cd799439011'),
@@ -73,7 +78,7 @@ describe('LecturerRatingController', () => {
 
       const mockRequest = {
         user: { id: '507f1f77bcf86cd799439011' },
-      };
+      } as RequestWithUser;
 
       mockLecturerRatingService.create.mockResolvedValue(mockLecturerRating);
 
@@ -97,7 +102,7 @@ describe('LecturerRatingController', () => {
         textbook: true,
       };
 
-      const mockRequest = {};
+      const mockRequest = {} as RequestWithUser;
 
       await expect(controller.create(createDto, mockRequest)).rejects.toThrow(
         UnauthorizedException,
@@ -117,7 +122,7 @@ describe('LecturerRatingController', () => {
 
       const mockRequest = {
         user: {},
-      };
+      } as RequestWithUser;
 
       await expect(controller.create(createDto, mockRequest)).rejects.toThrow(
         UnauthorizedException,

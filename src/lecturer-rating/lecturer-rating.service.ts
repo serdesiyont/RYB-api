@@ -137,7 +137,7 @@ export class LecturerRatingService {
       }
 
       // Update lecturer rating after updating a rating
-      await this.updateLecturerRating(rating.lecturerId as any);
+      await this.updateLecturerRating(rating.lecturerId);
 
       return rating;
     } catch (error) {
@@ -166,7 +166,7 @@ export class LecturerRatingService {
       }
 
       // Update lecturer rating after deleting a rating
-      await this.updateLecturerRating(rating.lecturerId as any);
+      await this.updateLecturerRating(rating.lecturerId);
 
       return rating;
     } catch (error) {

@@ -19,6 +19,10 @@ import { UpdateCampusRatingDto } from './dto/update-campus-rating.dto';
 import { ApiTags, ApiOperation, ApiParam } from '@nestjs/swagger';
 import { Response, Request } from 'express';
 
+interface RequestWithUser extends Request {
+  user?: { id: string };
+}
+
 @ApiTags('campus-rating')
 @Controller('campus-rating')
 export class CampusRatingController {
@@ -27,13 +31,13 @@ export class CampusRatingController {
   @Post()
   @ApiOperation({ summary: 'Create a new campus rating' })
   async create(
-    @Req() req: Request,
+    @Req() req: RequestWithUser,
     @Res() res: Response,
     @Body() createCampusRatingDto: CreateCampusRatingDto,
   ) {
     try {
       // Get user from better-auth session
-      const user = (req as any).user;
+      const user = req.user;
       if (!user || !user.id) {
         throw new UnauthorizedException(
           'User must be authenticated to create a rating',
