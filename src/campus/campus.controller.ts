@@ -10,6 +10,7 @@ import {
   HttpStatus,
   NotFoundException,
 } from '@nestjs/common';
+import { AllowAnonymous } from '@thallesp/nestjs-better-auth';
 import { CampusService } from './campus.service';
 import { CreateCampusDto } from './dto/create-campus.dto';
 import { UpdateCampusDto } from './dto/update-campus.dto';
@@ -39,6 +40,7 @@ export class CampusController {
   }
 
   @Get()
+  @AllowAnonymous()
   @ApiOperation({ summary: 'Get all campuses' })
   async findAll(@Res() res: Response) {
     try {
@@ -56,6 +58,7 @@ export class CampusController {
   }
 
   @Get(':id')
+  @AllowAnonymous()
   @ApiOperation({ summary: 'Get a campus by ID' })
   async findOne(@Res() res: Response, @Param('id') id: string) {
     try {

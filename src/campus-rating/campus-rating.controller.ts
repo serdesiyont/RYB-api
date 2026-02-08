@@ -13,6 +13,7 @@ import {
   Req,
   UnauthorizedException,
 } from '@nestjs/common';
+import { AllowAnonymous } from '@thallesp/nestjs-better-auth';
 import { CampusRatingService } from './campus-rating.service';
 import { CreateCampusRatingDto } from './dto/create-campus-rating.dto';
 import { UpdateCampusRatingDto } from './dto/update-campus-rating.dto';
@@ -71,6 +72,7 @@ export class CampusRatingController {
   }
 
   @Get()
+  @AllowAnonymous()
   @ApiOperation({ summary: 'Get all campus ratings' })
   async findAll(@Res() res: Response) {
     try {
@@ -93,6 +95,7 @@ export class CampusRatingController {
   }
 
   @Get(':id')
+  @AllowAnonymous()
   @ApiOperation({ summary: 'Get a campus rating by ID' })
   @ApiParam({ name: 'id', description: 'Campus rating ID' })
   async findOne(@Res() res: Response, @Param('id') id: string) {
@@ -121,6 +124,7 @@ export class CampusRatingController {
   }
 
   @Get('campus/:campusId')
+  @AllowAnonymous()
   @ApiOperation({ summary: 'Get all ratings for a specific campus' })
   @ApiParam({ name: 'campusId', description: 'Campus ID' })
   async findByCampus(
@@ -147,6 +151,7 @@ export class CampusRatingController {
   }
 
   @Get('user/:userId')
+  @AllowAnonymous()
   @ApiOperation({ summary: 'Get all ratings by a specific user' })
   @ApiParam({ name: 'userId', description: 'User ID' })
   async findByUser(@Res() res: Response, @Param('userId') userId: string) {

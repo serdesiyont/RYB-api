@@ -10,6 +10,7 @@ import {
   HttpStatus,
   NotFoundException,
 } from '@nestjs/common';
+import { AllowAnonymous } from '@thallesp/nestjs-better-auth';
 import { LecturerService } from './lecturer.service';
 import { CreateLecturerDto } from './dto/create-lecturer.dto';
 import { UpdateLecturerDto } from './dto/update-lecturer.dto';
@@ -43,6 +44,7 @@ export class LecturerController {
   }
 
   @Get()
+  @AllowAnonymous()
   @ApiOperation({ summary: 'Get all lecturers' })
   async findAll(@Res() res: Response) {
     try {
@@ -60,6 +62,7 @@ export class LecturerController {
   }
 
   @Get(':id')
+  @AllowAnonymous()
   @ApiOperation({ summary: 'Get a lecturer by ID' })
   async findOne(@Res() res: Response, @Param('id') id: string) {
     try {

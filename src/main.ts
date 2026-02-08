@@ -9,6 +9,11 @@ async function bootstrap() {
     bodyParser: false,
   });
 
+  app.enableCors({
+    origin: ['http://localhost:4000'],
+    credentials: true,
+  });
+
   app.useGlobalPipes(new ValidationPipe());
 
   const config = new DocumentBuilder()

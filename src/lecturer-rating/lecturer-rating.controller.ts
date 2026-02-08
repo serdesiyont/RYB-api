@@ -9,6 +9,7 @@ import {
   Req,
   UnauthorizedException,
 } from '@nestjs/common';
+import { AllowAnonymous } from '@thallesp/nestjs-better-auth';
 import { LecturerRatingService } from './lecturer-rating.service';
 import { CreateLecturerRatingDto } from './dto/create-lecturer-rating.dto';
 import { UpdateLecturerRatingDto } from './dto/update-lecturer-rating.dto';
@@ -46,6 +47,7 @@ export class LecturerRatingController {
   }
 
   @Get()
+  @AllowAnonymous()
   @ApiOperation({ summary: 'Get all lecturer ratings' })
   @ApiResponse({ status: 200, description: 'Return all lecturer ratings' })
   async findAll() {
@@ -53,6 +55,7 @@ export class LecturerRatingController {
   }
 
   @Get(':id')
+  @AllowAnonymous()
   @ApiOperation({ summary: 'Get a lecturer rating by ID' })
   @ApiResponse({ status: 200, description: 'Return a lecturer rating' })
   @ApiResponse({ status: 404, description: 'Lecturer rating not found' })
@@ -61,6 +64,7 @@ export class LecturerRatingController {
   }
 
   @Get('lecturer/:lecturerId')
+  @AllowAnonymous()
   @ApiOperation({ summary: 'Get all ratings for a specific lecturer' })
   @ApiResponse({ status: 200, description: 'Return ratings for the lecturer' })
   async findByLecturer(@Param('lecturerId') lecturerId: string) {
@@ -68,6 +72,7 @@ export class LecturerRatingController {
   }
 
   @Get('user/:userId')
+  @AllowAnonymous()
   @ApiOperation({ summary: 'Get all ratings by a specific user' })
   @ApiResponse({ status: 200, description: 'Return ratings by the user' })
   async findByUser(@Param('userId') userId: string) {

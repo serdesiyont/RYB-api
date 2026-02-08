@@ -8,6 +8,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthModule } from '@thallesp/nestjs-better-auth';
 import { Connection } from 'mongoose';
 import { createAuthConfig } from './auth/auth.config';
+import { AuthController } from './auth/auth.controller';
 
 @Module({
   imports: [
@@ -47,7 +48,6 @@ import { createAuthConfig } from './auth/auth.config';
             configService.get<string>('EMAIL_FROM')!,
             configService.get<string>('BASE_URL') || 'http://localhost:3000',
           ),
-          disableGlobalAuthGuard: true,
         };
       },
       inject: [getConnectionToken(), ConfigService],
@@ -57,7 +57,7 @@ import { createAuthConfig } from './auth/auth.config';
     CampusRatingModule,
     LecturerRatingModule,
   ],
-  controllers: [],
+  controllers: [AuthController],
   providers: [],
 })
 export class AppModule {}

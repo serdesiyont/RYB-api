@@ -11,6 +11,10 @@ export const createAuthConfig = (
 ) => {
   return betterAuth({
     baseURL: baseUrl,
+    cors: {
+      origin: ['http://localhost:4000'],
+      credentials: true,
+    },
     database: mongodbAdapter(connection.db!),
     emailAndPassword: {
       enabled: true,
@@ -18,8 +22,8 @@ export const createAuthConfig = (
     },
     emailVerification: {
       sendVerificationEmail: async ({ user, url }) => {
-        // don't await the email sending
-         sendEmail({
+        // don't await the sendEmail function, trust me bro
+        sendEmail({
           smtpConfig,
           from: emailFrom,
           to: user.email,
