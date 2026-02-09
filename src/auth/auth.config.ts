@@ -8,9 +8,13 @@ export const createAuthConfig = (
   smtpConfig: SmtpConfig,
   emailFrom: string,
   baseUrl: string,
+  verificationCallbackUrl: string,
+  googleClientId: string,
+  googleClientSecret: string,
 ) => {
   return betterAuth({
     baseURL: baseUrl,
+    trustedOrigins: ['http://localhost:4000'],
     cors: {
       origin: ['http://localhost:4000'],
       credentials: true,
@@ -21,14 +25,27 @@ export const createAuthConfig = (
       requireEmailVerification: true,
     },
     emailVerification: {
-      sendVerificationEmail: async ({ user, url }) => {
+      sendOnSignUp: true,
+      sendVerificationEmail: async ({ user, token }) => {
+        // Construct the verification URL with token and callback URL
+        const encodedCallbackURL = encodeURIComponent(verificationCallbackUrl);
+        const verificationUrl = `${baseUrl}/api/auth/verify-email?token=${token}&callbackURL=${encodedCallbackURL}`;
+
         // don't await the sendEmail function, trust me bro
         sendEmail({
           smtpConfig,
           from: emailFrom,
           to: user.email,
-          url,
+          url: verificationUrl,
         });
+      },
+      autoSignInAfterVerification: true,
+    },
+    socialProviders: {
+      google: {
+        clientId: googleClientId,
+        clientSecret: googleClientSecret,
+        redirectURI: `${baseUrl}/api/auth/callback/google`,
       },
     },
   });

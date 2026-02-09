@@ -202,4 +202,32 @@ export const authDocumentation = {
       },
     },
   },
+  '/api/auth/sign-out': {
+    post: {
+      tags: ['auth'],
+      summary: 'Sign out the current user',
+      operationId: 'signOut',
+      description: 'Logs out the current user and clears their session',
+      security: [{ bearerAuth: [] }],
+      responses: {
+        '200': {
+          description: 'Successfully signed out. Session cleared.',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  success: { type: 'boolean', example: true },
+                  message: { type: 'string', example: 'Logged out successfully' },
+                },
+              },
+            },
+          },
+        },
+        '401': { 
+          description: 'Unauthorized - No active session' 
+        },
+      },
+    },
+  },
 };

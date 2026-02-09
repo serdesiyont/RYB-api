@@ -8,7 +8,6 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthModule } from '@thallesp/nestjs-better-auth';
 import { Connection } from 'mongoose';
 import { createAuthConfig } from './auth/auth.config';
-import { AuthController } from './auth/auth.controller';
 
 @Module({
   imports: [
@@ -47,6 +46,9 @@ import { AuthController } from './auth/auth.controller';
             },
             configService.get<string>('EMAIL_FROM')!,
             configService.get<string>('BASE_URL') || 'http://localhost:3000',
+            configService.get<string>('VERIFICATION_CALLBACK_URL') || '/',
+            configService.get<string>('GOOGLE_CLIENT_ID')!,
+            configService.get<string>('GOOGLE_CLIENT_SECRET')!,
           ),
         };
       },
@@ -57,7 +59,7 @@ import { AuthController } from './auth/auth.controller';
     CampusRatingModule,
     LecturerRatingModule,
   ],
-  controllers: [AuthController],
+  controllers: [],
   providers: [],
 })
 export class AppModule {}
