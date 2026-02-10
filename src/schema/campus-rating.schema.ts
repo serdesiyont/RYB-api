@@ -40,6 +40,9 @@ export class CampusRating {
 
   @Prop({ required: true })
   food: number;
+
+  @Prop()
+  comment: string;
 }
 
 export const CampusRatingSchema = SchemaFactory.createForClass(CampusRating);

@@ -30,6 +30,10 @@ export class CreateLecturerRatingDto {
   @Max(5)
   difficulty: number;
 
+  @ApiProperty({ description: 'Would take this lecturer again' })
+  @IsBoolean()
+  wouldTakeAgain: boolean;
+
   @ApiProperty({ description: 'Quality rating (1-5)', minimum: 1, maximum: 5 })
   @IsNumber()
   @Min(1)

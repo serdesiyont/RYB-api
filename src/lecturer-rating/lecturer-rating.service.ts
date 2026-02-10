@@ -192,7 +192,12 @@ export class LecturerRatingService {
       if (ratings.length === 0) {
         // No ratings, set to 0
         await this.lecturerModel
-          .findByIdAndUpdate(lecturerId, { rating: 0, count: 0 })
+          .findByIdAndUpdate(lecturerId, {
+            rating: 0,
+            count: 0,
+            difficulty: 0,
+            wouldTakeAgain: 0,
+          })
           .exec();
         return;
       }
@@ -204,14 +209,33 @@ export class LecturerRatingService {
         return sum + avgRating;
       }, 0);
 
-      const averageRating = totalRating / ratings.length;
-      const roundedRating = Math.round(averageRating * 100) / 100;
+      // Calculate average difficulty
+      const totalDifficulty = ratings.reduce(
+        (sum, rating) => sum + rating.difficulty,
+        0,
+      );
 
-      // Update lecturer with new average rating and count
+      // Calculate percentage of wouldTakeAgain (true values)
+      const wouldTakeAgainCount = ratings.filter(
+        (rating) => rating.wouldTakeAgain === true,
+      ).length;
+      const wouldTakeAgainPercentage =
+        (wouldTakeAgainCount / ratings.length) * 100;
+
+      const averageRating = totalRating / ratings.length;
+      const averageDifficulty = totalDifficulty / ratings.length;
+      const roundedRating = Math.round(averageRating * 100) / 100;
+      const roundedDifficulty = Math.round(averageDifficulty * 100) / 100;
+      const roundedWouldTakeAgain =
+        Math.round(wouldTakeAgainPercentage * 100) / 100;
+
+      // Update lecturer with new average rating, difficulty, wouldTakeAgain, and count
       await this.lecturerModel
         .findByIdAndUpdate(lecturerId, {
           rating: roundedRating,
           count: ratings.length,
+          difficulty: roundedDifficulty,
+          wouldTakeAgain: roundedWouldTakeAgain,
         })
         .exec();
     } catch (error) {

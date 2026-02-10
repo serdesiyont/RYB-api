@@ -18,6 +18,9 @@ export class LecturerRating {
   difficulty: number;
 
   @Prop({ required: true })
+  wouldTakeAgain: boolean;
+
+  @Prop({ required: true })
   quality: number;
 
   @Prop({ required: true })

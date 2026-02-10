@@ -22,6 +22,12 @@ export class Lecturer {
 
   @Prop({ default: 0 })
   count: number;
+
+  @Prop({ default: 0 })
+  difficulty: number;
+
+  @Prop({ default: 0 })
+  wouldTakeAgain: number;
 }
 
 export const LecturerSchema = SchemaFactory.createForClass(Lecturer);

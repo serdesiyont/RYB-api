@@ -218,14 +218,17 @@ export const authDocumentation = {
                 type: 'object',
                 properties: {
                   success: { type: 'boolean', example: true },
-                  message: { type: 'string', example: 'Logged out successfully' },
+                  message: {
+                    type: 'string',
+                    example: 'Logged out successfully',
+                  },
                 },
               },
             },
           },
         },
-        '401': { 
-          description: 'Unauthorized - No active session' 
+        '401': {
+          description: 'Unauthorized - No active session',
         },
       },
     },

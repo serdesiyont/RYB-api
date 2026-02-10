@@ -1,0 +1,949 @@
+{
+  "apiVersion": "1.0.0",
+  "baseUrl": "http://localhost:3000",
+  "authentication": {
+    "type": "session-based",
+    "provider": "better-auth",
+    "notes": "Most endpoints require authentication unless marked with @AllowAnonymous. Session cookies are used for authentication."
+  },
+  "endpoints": {
+    "auth": {
+      "basePath": "/api/auth",
+      "endpoints": [
+        {
+          "path": "/api/auth/sign-up/email",
+          "method": "POST",
+          "description": "Register a new user with email and password",
+          "authentication": false,
+          "requestBody": {
+            "email": "string",
+            "password": "string",
+            "name": "string (optional)"
+          },
+          "response": {
+            "success": {
+              "user": {
+                "id": "string",
+                "email": "string",
+                "name": "string",
+                "emailVerified": "boolean"
+              }
+            }
+          }
+        },
+        {
+          "path": "/api/auth/sign-in/email",
+          "method": "POST",
+          "description": "Sign in with email and password",
+          "authentication": false,
+          "requestBody": {
+            "email": "string",
+            "password": "string"
+          },
+          "response": {
+            "success": {
+              "user": {
+                "id": "string",
+                "email": "string",
+                "emailVerified": "boolean"
+              },
+              "session": "object"
+            }
+          }
+        },
+        {
+          "path": "/api/auth/verify-email",
+          "method": "GET",
+          "description": "Verify user email with token",
+          "authentication": false,
+          "queryParams": {
+            "token": "string (required)",
+            "callbackURL": "string (optional, defaults to /)"
+          },
+          "response": {
+            "success": "Redirects to callbackURL after verification"
+          }
+        },
+        {
+          "path": "/api/auth/signin/google",
+          "method": "GET",
+          "description": "Initiate Google OAuth sign-in",
+          "authentication": false,
+          "response": {
+            "success": "Redirects to Google OAuth consent screen"
+          }
+        },
+        {
+          "path": "/api/auth/callback/google",
+          "method": "GET",
+          "description": "Google OAuth callback endpoint",
+          "authentication": false,
+          "response": {
+            "success": "Creates session and redirects to application"
+          }
+        },
+        {
+          "path": "/api/auth/sign-out",
+          "method": "POST",
+          "description": "Sign out current user",
+          "authentication": true,
+          "response": {
+            "success": {
+              "message": "Signed out successfully"
+            }
+          }
+        }
+      ]
+    },
+    "campus": {
+      "basePath": "/campus",
+      "endpoints": [
+        {
+          "path": "/campus",
+          "method": "POST",
+          "description": "Create a new campus",
+          "authentication": true,
+          "requestBody": {
+            "name": "string (required)",
+            "address": "string (required)",
+            "description": "string (optional)"
+          },
+          "response": {
+            "201": {
+              "message": "Campus created successfully",
+              "data": {
+                "_id": "string",
+                "name": "string",
+                "address": "string",
+                "description": "string",
+                "overallRating": "number (default: 0)",
+                "count": "number (default: 0)",
+                "createdAt": "string (ISO date)",
+                "updatedAt": "string (ISO date)"
+              }
+            },
+            "500": {
+              "message": "Error creating campus",
+              "error": "string"
+            }
+          }
+        },
+        {
+          "path": "/campus",
+          "method": "GET",
+          "description": "Get all campuses",
+          "authentication": false,
+          "response": {
+            "200": {
+              "message": "Campuses retrieved successfully",
+              "data": [
+                {
+                  "_id": "string",
+                  "name": "string",
+                  "address": "string",
+                  "description": "string",
+                  "overallRating": "number",
+                  "count": "number",
+                  "createdAt": "string (ISO date)",
+                  "updatedAt": "string (ISO date)"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "path": "/campus/:id",
+          "method": "GET",
+          "description": "Get a campus by ID",
+          "authentication": false,
+          "pathParams": {
+            "id": "string (MongoDB ObjectId)"
+          },
+          "response": {
+            "200": {
+              "message": "Campus retrieved successfully",
+              "data": {
+                "_id": "string",
+                "name": "string",
+                "address": "string",
+                "description": "string",
+                "overallRating": "number",
+                "count": "number",
+                "createdAt": "string (ISO date)",
+                "updatedAt": "string (ISO date)"
+              }
+            },
+            "404": {
+              "message": "Campus not found"
+            }
+          }
+        },
+        {
+          "path": "/campus/:id",
+          "method": "PATCH",
+          "description": "Update a campus",
+          "authentication": true,
+          "pathParams": {
+            "id": "string (MongoDB ObjectId)"
+          },
+          "requestBody": {
+            "name": "string (optional)",
+            "address": "string (optional)",
+            "description": "string (optional)"
+          },
+          "response": {
+            "200": {
+              "message": "Campus updated successfully",
+              "data": {
+                "_id": "string",
+                "name": "string",
+                "address": "string",
+                "description": "string",
+                "overallRating": "number",
+                "count": "number",
+                "createdAt": "string (ISO date)",
+                "updatedAt": "string (ISO date)"
+              }
+            },
+            "404": {
+              "message": "Campus not found"
+            }
+          }
+        },
+        {
+          "path": "/campus/:id",
+          "method": "DELETE",
+          "description": "Delete a campus",
+          "authentication": true,
+          "pathParams": {
+            "id": "string (MongoDB ObjectId)"
+          },
+          "response": {
+            "200": {
+              "message": "Campus deleted successfully",
+              "data": {
+                "_id": "string",
+                "name": "string"
+              }
+            },
+            "404": {
+              "message": "Campus not found"
+            }
+          }
+        }
+      ]
+    },
+    "lecturer": {
+      "basePath": "/lecturer",
+      "endpoints": [
+        {
+          "path": "/lecturer",
+          "method": "POST",
+          "description": "Create a new lecturer",
+          "authentication": true,
+          "requestBody": {
+            "name": "string (required)",
+            "university": "string (required)",
+            "department": "string (required)",
+            "courses": "array of strings (required, not empty)"
+          },
+          "response": {
+            "201": {
+              "message": "Lecturer created successfully",
+              "data": {
+                "_id": "string",
+                "name": "string",
+                "university": "string",
+                "department": "string",
+                "courses": ["string"],
+                "rating": "number (default: 0)",
+                "count": "number (default: 0)",
+                "difficulty": "number (default: 0, average difficulty from ratings)",
+                "wouldTakeAgain": "number (default: 0, percentage of students who would take again)",
+                "createdAt": "string (ISO date)",
+                "updatedAt": "string (ISO date)"
+              }
+            }
+          }
+        },
+        {
+          "path": "/lecturer",
+          "method": "GET",
+          "description": "Get all lecturers",
+          "authentication": false,
+          "response": {
+            "200": {
+              "message": "Lecturers retrieved successfully",
+              "data": [
+                {
+                  "_id": "string",
+                  "name": "string",
+                  "university": "string",
+                  "department": "string",
+                  "courses": ["string"],
+                  "rating": "number",
+                  "count": "number",
+                  "difficulty": "number (average difficulty from ratings)",
+                  "wouldTakeAgain": "number (percentage of students who would take again)",
+                  "createdAt": "string (ISO date)",
+                  "updatedAt": "string (ISO date)"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "path": "/lecturer/:id",
+          "method": "GET",
+          "description": "Get a lecturer by ID",
+          "authentication": false,
+          "pathParams": {
+            "id": "string (MongoDB ObjectId)"
+          },
+          "response": {
+            "200": {
+              "message": "Lecturer retrieved successfully",
+              "data": {
+                "_id": "string",
+                "name": "string",
+                "university": "string",
+                "department": "string",
+                "courses": ["string"],
+                "rating": "number",
+                "count": "number",
+                "createdAt": "string (ISO date)",
+                "updatedAt": "string (ISO date)"
+              }
+            },
+            "404": {
+              "message": "Lecturer not found"
+            }
+          }
+        },
+        {
+          "path": "/lecturer/:id",
+          "method": "PATCH",
+          "description": "Update a lecturer",
+          "authentication": true,
+          "pathParams": {
+            "id": "string (MongoDB ObjectId)"
+          },
+          "requestBody": {
+            "name": "string (optional)",
+            "university": "string (optional)",
+            "department": "string (optional)",
+            "courses": "array of strings (optional)"
+          },
+          "response": {
+            "200": {
+              "message": "Lecturer updated successfully",
+              "data": {
+                "_id": "string",
+                "name": "string",
+                "university": "string",
+                "department": "string",
+                "courses": ["string"],
+                "rating": "number",
+                "count": "number",
+                "difficulty": "number (average difficulty from ratings)",
+                "wouldTakeAgain": "number (percentage of students who would take again)",
+                "createdAt": "string (ISO date)",
+                "updatedAt": "string (ISO date)"
+              }
+            },
+            "404": {
+              "message": "Lecturer not found"
+            }
+          }
+        },
+        {
+          "path": "/lecturer/:id",
+          "method": "DELETE",
+          "description": "Delete a lecturer",
+          "authentication": true,
+          "pathParams": {
+            "id": "string (MongoDB ObjectId)"
+          },
+          "response": {
+            "200": {
+              "message": "Lecturer deleted successfully",
+              "data": {
+                "_id": "string",
+                "name": "string"
+              }
+            },
+            "404": {
+              "message": "Lecturer not found"
+            }
+          }
+        },
+        {
+          "path": "/lecturer/:id/courses",
+          "method": "POST",
+          "description": "Add a course to a lecturer",
+          "authentication": true,
+          "pathParams": {
+            "id": "string (MongoDB ObjectId)"
+          },
+          "requestBody": {
+            "name": "string (required)"
+          },
+          "response": {
+            "200": {
+              "message": "Course added successfully",
+              "data": {
+                "_id": "string",
+                "name": "string",
+                "courses": ["string"]
+              }
+            },
+            "404": {
+              "message": "Lecturer not found"
+            }
+          }
+        },
+        {
+          "path": "/lecturer/:id/courses",
+          "method": "DELETE",
+          "description": "Remove a course from a lecturer",
+          "authentication": true,
+          "pathParams": {
+            "id": "string (MongoDB ObjectId)"
+          },
+          "requestBody": {
+            "name": "string (required)"
+          },
+          "response": {
+            "200": {
+              "message": "Course removed successfully",
+              "data": {
+                "_id": "string",
+                "name": "string",
+                "courses": ["string"]
+              }
+            },
+            "404": {
+              "message": "Lecturer not found or Course not found"
+            }
+          }
+        }
+      ]
+    },
+    "campusRating": {
+      "basePath": "/campus-rating",
+      "endpoints": [
+        {
+          "path": "/campus-rating",
+          "method": "POST",
+          "description": "Create a new campus rating",
+          "authentication": true,
+          "requestBody": {
+            "campusId": "string (required, MongoDB ObjectId)",
+            "reputation": "number (required, 1-5)",
+            "social": "number (required, 1-5)",
+            "clubs": "number (required, 1-5)",
+            "opportunities": "number (required, 1-5)",
+            "location": "number (required, 1-5)",
+            "happiness": "number (required, 1-5)",
+            "facilities": "number (required, 1-5)",
+            "safety": "number (required, 1-5)",
+            "internet": "number (required, 1-5)",
+            "food": "number (required, 1-5)",
+            "comment": "string (optional)"
+          },
+          "response": {
+            "201": {
+              "message": "Campus rating created successfully",
+              "data": {
+                "_id": "string",
+                "userId": "string",
+                "campusId": "string",
+                "reputation": "number",
+                "social": "number",
+                "clubs": "number",
+                "opportunities": "number",
+                "location": "number",
+                "happiness": "number",
+                "facilities": "number",
+                "safety": "number",
+                "internet": "number",
+                "food": "number",
+                "comment": "string",
+                "createdAt": "string (ISO date)",
+                "updatedAt": "string (ISO date)"
+              }
+            },
+            "401": {
+              "message": "User must be authenticated to create a rating"
+            },
+            "400": {
+              "message": "Validation error or user already rated this campus"
+            }
+          }
+        },
+        {
+          "path": "/campus-rating",
+          "method": "GET",
+          "description": "Get all campus ratings",
+          "authentication": false,
+          "response": {
+            "200": {
+              "message": "Campus ratings retrieved successfully",
+              "data": [
+                {
+                  "_id": "string",
+                  "userId": "string",
+                  "campusId": "string",
+                  "reputation": "number",
+                  "social": "number",
+                  "clubs": "number",
+                  "opportunities": "number",
+                  "location": "number",
+                  "happiness": "number",
+                  "facilities": "number",
+                  "safety": "number",
+                  "internet": "number",
+                  "food": "number",
+                  "comment": "string",
+                  "createdAt": "string (ISO date)",
+                  "updatedAt": "string (ISO date)"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "path": "/campus-rating/:id",
+          "method": "GET",
+          "description": "Get a campus rating by ID",
+          "authentication": false,
+          "pathParams": {
+            "id": "string (MongoDB ObjectId)"
+          },
+          "response": {
+            "200": {
+              "message": "Campus rating retrieved successfully",
+              "data": {
+                "_id": "string",
+                "userId": "string",
+                "campusId": "string",
+                "reputation": "number",
+                "social": "number",
+                "clubs": "number",
+                "opportunities": "number",
+                "location": "number",
+                "happiness": "number",
+                "facilities": "number",
+                "safety": "number",
+                "internet": "number",
+                "food": "number",
+                "comment": "string",
+                "createdAt": "string (ISO date)",
+                "updatedAt": "string (ISO date)"
+              }
+            },
+            "404": {
+              "message": "Campus rating not found"
+            }
+          }
+        },
+        {
+          "path": "/campus-rating/campus/:campusId",
+          "method": "GET",
+          "description": "Get all ratings for a specific campus",
+          "authentication": false,
+          "pathParams": {
+            "campusId": "string (MongoDB ObjectId)"
+          },
+          "response": {
+            "200": {
+              "message": "Campus ratings retrieved successfully",
+              "data": [
+                {
+                  "_id": "string",
+                  "userId": "string",
+                  "campusId": "string",
+                  "reputation": "number",
+                  "social": "number",
+                  "clubs": "number",
+                  "opportunities": "number",
+                  "location": "number",
+                  "happiness": "number",
+                  "facilities": "number",
+                  "safety": "number",
+                  "internet": "number",
+                  "food": "number",
+                  "comment": "string",
+                  "createdAt": "string (ISO date)",
+                  "updatedAt": "string (ISO date)"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "path": "/campus-rating/user/:userId",
+          "method": "GET",
+          "description": "Get all ratings by a specific user",
+          "authentication": false,
+          "pathParams": {
+            "userId": "string (User ID)"
+          },
+          "response": {
+            "200": {
+              "message": "User ratings retrieved successfully",
+              "data": [
+                {
+                  "_id": "string",
+                  "userId": "string",
+                  "campusId": "string",
+                  "reputation": "number",
+                  "social": "number",
+                  "clubs": "number",
+                  "opportunities": "number",
+                  "location": "number",
+                  "happiness": "number",
+                  "facilities": "number",
+                  "safety": "number",
+                  "internet": "number",
+                  "food": "number",
+                  "comment": "string",
+                  "createdAt": "string (ISO date)",
+                  "updatedAt": "string (ISO date)"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "path": "/campus-rating/:id",
+          "method": "PATCH",
+          "description": "Update a campus rating",
+          "authentication": true,
+          "pathParams": {
+            "id": "string (MongoDB ObjectId)"
+          },
+          "requestBody": {
+            "reputation": "number (optional, 1-5)",
+            "social": "number (optional, 1-5)",
+            "clubs": "number (optional, 1-5)",
+            "opportunities": "number (optional, 1-5)",
+            "location": "number (optional, 1-5)",
+            "happiness": "number (optional, 1-5)",
+            "facilities": "number (optional, 1-5)",
+            "safety": "number (optional, 1-5)",
+            "internet": "number (optional, 1-5)",
+            "food": "number (optional, 1-5)",
+            "comment": "string (optional)"
+          },
+          "response": {
+            "200": {
+              "message": "Campus rating updated successfully",
+              "data": {
+                "_id": "string",
+                "userId": "string",
+                "campusId": "string",
+                "reputation": "number",
+                "social": "number",
+                "clubs": "number",
+                "opportunities": "number",
+                "location": "number",
+                "happiness": "number",
+                "facilities": "number",
+                "safety": "number",
+                "internet": "number",
+                "food": "number",
+                "comment": "string",
+                "createdAt": "string (ISO date)",
+                "updatedAt": "string (ISO date)"
+              }
+            },
+            "404": {
+              "message": "Campus rating not found"
+            }
+          }
+        },
+        {
+          "path": "/campus-rating/:id",
+          "method": "DELETE",
+          "description": "Delete a campus rating",
+          "authentication": true,
+          "pathParams": {
+            "id": "string (MongoDB ObjectId)"
+          },
+          "response": {
+            "200": {
+              "message": "Campus rating deleted successfully",
+              "data": {
+                "_id": "string"
+              }
+            },
+            "404": {
+              "message": "Campus rating not found"
+            }
+          }
+        }
+      ]
+    },
+    "lecturerRating": {
+      "basePath": "/lecturer-ratings",
+      "endpoints": [
+        {
+          "path": "/lecturer-ratings",
+          "method": "POST",
+          "description": "Create a new lecturer rating",
+          "authentication": true,
+          "requestBody": {
+            "lecturerId": "string (required, MongoDB ObjectId)",
+            "course": "string (required)",
+            "difficulty": "number (required, 1-5)",
+            "wouldTakeAgain": "boolean (required)",
+            "quality": "number (required, 1-5)",
+            "creditHr": "number (required, 1-5)",
+            "grade": "string (required)",
+            "textbook": "boolean (required)",
+            "comment": "string (optional)"
+          },
+          "response": {
+            "201": {
+              "description": "Lecturer rating created successfully",
+              "data": {
+                "_id": "string",
+                "lecturerId": "string",
+                "userId": "string",
+                "course": "string",
+                "difficulty": "number",
+                "quality": "number",
+                "creditHr": "number",
+                "grade": "string",
+                "textbook": "boolean",
+                "comment": "string",
+                "createdAt": "string (ISO date)",
+                "updatedAt": "string (ISO date)"
+              }
+            },
+            "400": {
+              "description": "Bad request"
+            },
+            "401": {
+              "description": "User must be authenticated to create a rating"
+            }
+          }
+        },
+        {
+          "path": "/lecturer-ratings",
+          "method": "GET",
+          "description": "Get all lecturer ratings",
+          "authentication": false,
+          "response": {
+            "200": {
+              "description": "Return all lecturer ratings",
+              "data": [
+                {
+                  "_id": "string",
+                  "lecturerId": "string",
+                  "userId": "string",
+                  "course": "string",
+                  "difficulty": "number",
+                  "wouldTakeAgain": "boolean",
+                  "quality": "number",
+                  "creditHr": "number",
+                  "grade": "string",
+                  "textbook": "boolean",
+                  "comment": "string",
+                  "createdAt": "string (ISO date)",
+                  "updatedAt": "string (ISO date)"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "path": "/lecturer-ratings/:id",
+          "method": "GET",
+          "description": "Get a lecturer rating by ID",
+          "authentication": false,
+          "pathParams": {
+            "id": "string (MongoDB ObjectId)"
+          },
+          "response": {
+            "200": {
+              "description": "Return a lecturer rating",
+              "data": {
+                "_id": "string",
+                "lecturerId": "string",
+                "userId": "string",
+                "course": "string",
+                "difficulty": "number",
+                "wouldTakeAgain": "boolean",
+                "quality": "number",
+                "creditHr": "number",
+                "grade": "string",
+                "textbook": "boolean",
+                "comment": "string",
+                "createdAt": "string (ISO date)",
+                "updatedAt": "string (ISO date)"
+              }
+            },
+            "404": {
+              "description": "Lecturer rating not found"
+            }
+          }
+        },
+        {
+          "path": "/lecturer-ratings/lecturer/:lecturerId",
+          "method": "GET",
+          "description": "Get all ratings for a specific lecturer",
+          "authentication": false,
+          "pathParams": {
+            "lecturerId": "string (MongoDB ObjectId)"
+          },
+          "response": {
+            "200": {
+              "description": "Return ratings for the lecturer",
+              "data": [
+                {
+                  "_id": "string",
+                  "lecturerId": "string",
+                  "userId": "string",
+                  "course": "string",
+                  "difficulty": "number",
+                  "wouldTakeAgain": "boolean",
+                  "quality": "number",
+                  "creditHr": "number",
+                  "grade": "string",
+                  "textbook": "boolean",
+                  "comment": "string",
+                  "createdAt": "string (ISO date)",
+                  "updatedAt": "string (ISO date)"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "path": "/lecturer-ratings/user/:userId",
+          "method": "GET",
+          "description": "Get all ratings by a specific user",
+          "authentication": false,
+          "pathParams": {
+            "userId": "string (User ID)"
+          },
+          "response": {
+            "200": {
+              "description": "Return ratings by the user",
+              "data": [
+                {
+                  "_id": "string",
+                  "lecturerId": "string",
+                  "userId": "string",
+                  "course": "string",
+                  "difficulty": "number",
+                  "wouldTakeAgain": "boolean",
+                  "quality": "number",
+                  "creditHr": "number",
+                  "grade": "string",
+                  "textbook": "boolean",
+                  "comment": "string",
+                  "createdAt": "string (ISO date)",
+                  "updatedAt": "string (ISO date)"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "path": "/lecturer-ratings/:id",
+          "method": "PATCH",
+          "description": "Update a lecturer rating",
+          "authentication": true,
+          "pathParams": {
+            "id": "string (MongoDB ObjectId)"
+          },
+          "requestBody": {
+            "course": "string (optional)",
+            "difficulty": "number (optional, 1-5)",
+            "wouldTakeAgain": "boolean (optional)",
+            "quality": "number (optional, 1-5)",
+            "creditHr": "number (optional, 1-5)",
+            "grade": "string (optional)",
+            "textbook": "boolean (optional)",
+            "comment": "string (optional)"
+          },
+          "response": {
+            "200": {
+              "description": "Lecturer rating updated successfully",
+              "data": {
+                "_id": "string",
+                "lecturerId": "string",
+                "userId": "string",
+                "course": "string",
+                "difficulty": "number",
+                "wouldTakeAgain": "boolean",
+                "quality": "number",
+                "creditHr": "number",
+                "grade": "string",
+                "textbook": "boolean",
+                "comment": "string",
+                "createdAt": "string (ISO date)",
+                "updatedAt": "string (ISO date)"
+              }
+            },
+            "404": {
+              "description": "Lecturer rating not found"
+            }
+          }
+        },
+        {
+          "path": "/lecturer-ratings/:id",
+          "method": "DELETE",
+          "description": "Delete a lecturer rating",
+          "authentication": true,
+          "pathParams": {
+            "id": "string (MongoDB ObjectId)"
+          },
+          "response": {
+            "200": {
+              "description": "Lecturer rating deleted successfully",
+              "data": {
+                "_id": "string"
+              }
+            },
+            "404": {
+              "description": "Lecturer rating not found"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "notes": {
+    "authentication": [
+      "Endpoints marked with 'authentication: true' require a valid session cookie from better-auth",
+      "Endpoints marked with 'authentication: false' can be accessed without authentication (@AllowAnonymous)",
+      "Email verification is required before users can fully access the application",
+      "Google OAuth is available as an alternative authentication method"
+    ],
+    "emailVerification": {
+      "description": "After sign-up, users receive a verification email",
+      "verificationUrl": "http://localhost:3000/api/auth/verify-email?token={TOKEN}&callbackURL={CALLBACK_URL}",
+      "callbackUrl": "Defaults to '/' but can be configured via VERIFICATION_CALLBACK_URL env variable"
+    },
+    "errorHandling": [
+      "All endpoints return consistent error responses with 'message' and optional 'error' fields",
+      "Common status codes: 200 (OK), 201 (Created), 400 (Bad Request), 401 (Unauthorized), 404 (Not Found), 500 (Internal Server Error)"
+    ],
+    "dataTypes": [
+      "MongoDB ObjectId: 24-character hexadecimal string",
+      "ISO Date: Standard ISO 8601 date-time format",
+      "Ratings: All numeric ratings are constrained between 1-5"
+    ],
+    "lecturerAggregateFields": [
+      "rating: Average of (difficulty + quality) / 2 from all ratings, rounded to 2 decimal places",
+      "count: Total number of ratings for the lecturer",
+      "difficulty: Average difficulty rating across all ratings, rounded to 2 decimal places",
+      "wouldTakeAgain: Percentage (0-100) of students who would take the lecturer again, rounded to 2 decimal places",
+      "Note: These fields are automatically computed when lecturer ratings are created, updated, or deleted"
+    ]
+  }
+}
