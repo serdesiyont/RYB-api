@@ -6,6 +6,7 @@ import {
   Max,
   IsBoolean,
   IsOptional,
+  IsArray,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -59,4 +60,15 @@ export class CreateLecturerRatingDto {
   @IsOptional()
   @IsString()
   comment?: string;
+
+  @ApiProperty({
+    description: 'Optional tags/keywords for the rating',
+    required: false,
+    type: [String],
+    example: ['tough grader', 'clear lectures', 'helpful'],
+  })
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  tags?: string[];
 }

@@ -13,6 +13,14 @@ export const createAuthConfig = (
   googleClientSecret: string,
 ) => {
   return betterAuth({
+    rateLimit: {
+      enabled: true,
+      window: 60,
+      max: 100,
+      customRules: {
+        '/search': { window: 10, max: 100 },
+      },
+    },
     baseURL: baseUrl,
     trustedOrigins: ['http://localhost:4000'],
     cors: {

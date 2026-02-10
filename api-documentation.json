@@ -95,6 +95,79 @@
         }
       ]
     },
+    "search": {
+      "basePath": "/search",
+      "endpoints": [
+        {
+          "path": "/search",
+          "method": "GET",
+          "description": "Fast efficient search for lecturers and campuses using MongoDB Atlas Search",
+          "authentication": false,
+          "queryParams": {
+            "lecturerName": "string (optional)",
+            "campusName": "string (optional)"
+          },
+          "searchBehavior": [
+            "If only lecturerName is provided: searches for lecturers across all universities",
+            "If only campusName is provided: searches for campuses/universities",
+            "If both lecturerName and campusName are provided: searches for lecturers at the specified campus",
+            "At least one parameter must be provided"
+          ],
+          "response": {
+            "200": {
+              "description": "Search results optimized for live search - returns only essential fields (id, name, and type)",
+              "campusSearchExample": {
+                "type": "campus",
+                "query": "Addis Ababa",
+                "results": [
+                  {
+                    "_id": "string",
+                    "name": "string"
+                  }
+                ],
+                "count": "number"
+              },
+              "lecturerSearchExample": {
+                "type": "lecturer",
+                "query": "John",
+                "results": [
+                  {
+                    "_id": "string",
+                    "name": "string"
+                  }
+                ],
+                "count": "number"
+              },
+              "narrowedSearchExample": {
+                "type": "lecturer",
+                "query": {
+                  "lecturerName": "John",
+                  "campusName": "Addis Ababa University"
+                },
+                "results": [
+                  {
+                    "_id": "string",
+                    "name": "string"
+                  }
+                ],
+                "count": "number"
+              }
+            },
+            "400": {
+              "message": "At least one search parameter (lecturerName or campusName) is required"
+            }
+          },
+          "features": [
+            "Uses MongoDB Atlas Search for fast full-text search",
+            "Fuzzy matching with up to 2 character edits for typo tolerance",
+            "Falls back to regex search if Atlas Search is not configured",
+            "Returns top 20 most relevant results",
+            "Optimized for live search - returns only _id and name fields to minimize payload size",
+            "Searches across multiple fields: name, department, courses, description, address"
+          ]
+        }
+      ]
+    },
     "campus": {
       "basePath": "/campus",
       "endpoints": [
@@ -702,7 +775,8 @@
             "creditHr": "number (required, 1-5)",
             "grade": "string (required)",
             "textbook": "boolean (required)",
-            "comment": "string (optional)"
+            "comment": "string (optional)",
+            "tags": "array of strings (optional, keywords/tags for the rating)"
           },
           "response": {
             "201": {
@@ -718,6 +792,7 @@
                 "grade": "string",
                 "textbook": "boolean",
                 "comment": "string",
+                "tags": ["string"],
                 "createdAt": "string (ISO date)",
                 "updatedAt": "string (ISO date)"
               }
@@ -751,6 +826,7 @@
                   "grade": "string",
                   "textbook": "boolean",
                   "comment": "string",
+                  "tags": ["string"],
                   "createdAt": "string (ISO date)",
                   "updatedAt": "string (ISO date)"
                 }
@@ -781,6 +857,7 @@
                 "grade": "string",
                 "textbook": "boolean",
                 "comment": "string",
+                "tags": ["string"],
                 "createdAt": "string (ISO date)",
                 "updatedAt": "string (ISO date)"
               }
@@ -814,6 +891,7 @@
                   "grade": "string",
                   "textbook": "boolean",
                   "comment": "string",
+                  "tags": ["string"],
                   "createdAt": "string (ISO date)",
                   "updatedAt": "string (ISO date)"
                 }
@@ -845,6 +923,7 @@
                   "grade": "string",
                   "textbook": "boolean",
                   "comment": "string",
+                  "tags": ["string"],
                   "createdAt": "string (ISO date)",
                   "updatedAt": "string (ISO date)"
                 }
@@ -868,7 +947,8 @@
             "creditHr": "number (optional, 1-5)",
             "grade": "string (optional)",
             "textbook": "boolean (optional)",
-            "comment": "string (optional)"
+            "comment": "string (optional)",
+            "tags": "array of strings (optional)"
           },
           "response": {
             "200": {
@@ -885,6 +965,7 @@
                 "grade": "string",
                 "textbook": "boolean",
                 "comment": "string",
+                "tags": ["string"],
                 "createdAt": "string (ISO date)",
                 "updatedAt": "string (ISO date)"
               }

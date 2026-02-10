@@ -34,6 +34,9 @@ export class LecturerRating {
 
   @Prop()
   comment: string;
+
+  @Prop([String])
+  tags: string[];
 }
 
 export const LecturerRatingSchema =
