@@ -10,6 +10,22 @@ import { AuthModule } from '@thallesp/nestjs-better-auth';
 import { Connection } from 'mongoose';
 import { createAuthConfig } from './auth/auth.config';
 
+const parseOriginList = (
+  value: string | undefined,
+  fallback: string[],
+): string[] => {
+  if (!value) {
+    return fallback;
+  }
+
+  const parsed = value
+    .split(',')
+    .map((origin) => origin.trim())
+    .filter(Boolean);
+
+  return parsed.length ? parsed : fallback;
+};
+
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -26,6 +42,15 @@ import { createAuthConfig } from './auth/auth.config';
       useFactory: (connection: Connection, configService: ConfigService) => {
         const smtpPort = configService.get<number>('SMTP_PORT') || 587;
         const smtpSecure = smtpPort === 465; // Port 465 uses SSL, port 587 uses STARTTLS
+        const defaultOrigins = ['http://localhost:4000'];
+        const trustedOrigins = parseOriginList(
+          configService.get<string>('TRUSTED_ORIGINS'),
+          defaultOrigins,
+        );
+        const corsOrigins = parseOriginList(
+          configService.get<string>('CORS_ORIGINS'),
+          defaultOrigins,
+        );
 
         return {
           auth: createAuthConfig(
@@ -50,6 +75,8 @@ import { createAuthConfig } from './auth/auth.config';
             configService.get<string>('VERIFICATION_CALLBACK_URL') || '/',
             configService.get<string>('GOOGLE_CLIENT_ID')!,
             configService.get<string>('GOOGLE_CLIENT_SECRET')!,
+            trustedOrigins,
+            corsOrigins,
           ),
         };
       },

@@ -11,6 +11,8 @@ export const createAuthConfig = (
   verificationCallbackUrl: string,
   googleClientId: string,
   googleClientSecret: string,
+  trustedOrigins: string[],
+  corsOrigins: string[],
 ) => {
   return betterAuth({
     rateLimit: {
@@ -22,9 +24,9 @@ export const createAuthConfig = (
       },
     },
     baseURL: baseUrl,
-    trustedOrigins: ['http://localhost:4000'],
+    trustedOrigins,
     cors: {
-      origin: ['http://localhost:4000'],
+      origin: corsOrigins,
       credentials: true,
     },
     database: mongodbAdapter(connection.db!),
