@@ -13,21 +13,27 @@ This module uses MongoDB Atlas Search for fast, efficient full-text search acros
 ## Search Behavior
 
 ### 1. Campus-Only Search
+
 ```
 GET /search?campusName=Addis Ababa
 ```
+
 Searches for campuses matching "Addis Ababa" across name, address, and description fields.
 
 ### 2. Lecturer-Only Search
+
 ```
 GET /search?lecturerName=John
 ```
+
 Searches for lecturers matching "John" across name, department, and courses fields.
 
 ### 3. Narrowed Search (Both Parameters)
+
 ```
 GET /search?lecturerName=John&campusName=Addis Ababa University
 ```
+
 Searches for lecturers matching "John" specifically at "Addis Ababa University".
 
 ## MongoDB Atlas Search Index Setup
@@ -130,14 +136,17 @@ Each result includes a `score` field indicating search relevance (higher is bett
 ## Troubleshooting
 
 ### Search Returns Empty Results
+
 1. Verify index names match exactly: `campus_search` and `lecturer_search`
 2. Ensure indexes are in "Active" state in Atlas
 3. Check that your MongoDB connection has proper permissions
 
 ### Slow Search Performance
+
 1. Verify Atlas Search indexes are created and active
 2. Check MongoDB Atlas cluster tier (M10+ recommended for production)
 3. Monitor index usage in Atlas metrics
 
 ### Error: "Atlas Search not configured"
+
 The system will automatically fall back to regex search. This is expected in development environments without Atlas.

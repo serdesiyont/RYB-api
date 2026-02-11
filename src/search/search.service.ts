@@ -62,6 +62,7 @@ export class SearchService {
             $project: {
               _id: 1,
               name: 1,
+              university: 1,
             },
           },
         ])
@@ -141,7 +142,7 @@ export class SearchService {
             { courses: { $regex: lecturerName, $options: 'i' } },
           ],
         })
-        .select('_id name')
+        .select('_id name university')
         .limit(20)
         .exec();
 
@@ -203,6 +204,7 @@ export class SearchService {
             $project: {
               _id: 1,
               name: 1,
+              university: 1,
             },
           },
         ])
@@ -225,7 +227,7 @@ export class SearchService {
             { courses: { $regex: lecturerName, $options: 'i' } },
           ],
         })
-        .select('_id name')
+        .select('_id name university')
         .limit(20)
         .exec();
 
