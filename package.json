@@ -82,5 +82,15 @@
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
+  },
+  "vercel": {
+    "config": {
+      "node": {
+        "external": [
+          "better-auth",
+          "@thallesp/nestjs-better-auth"
+        ]
+      }
+    }
   }
 }
