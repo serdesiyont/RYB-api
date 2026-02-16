@@ -10,20 +10,65 @@ import { AuthModule } from '@thallesp/nestjs-better-auth';
 import { Connection } from 'mongoose';
 import { createAuthConfig } from './auth/auth.config';
 
-const parseOriginList = (
-  value: string | undefined,
-  fallback: string[],
-): string[] => {
-  if (!value) {
-    return fallback;
+const getRequiredEnv = (configService: ConfigService, key: string): string => {
+  const value = configService.get<string>(key);
+  if (!value || !value.trim()) {
+    throw new Error(`Missing required environment variable: ${key}`);
   }
 
+  return value.trim();
+};
+
+const getRequiredNumber = (
+  configService: ConfigService,
+  key: string,
+): number => {
+  const value = getRequiredEnv(configService, key);
+  const parsed = Number.parseInt(value, 10);
+
+  if (Number.isNaN(parsed)) {
+    throw new Error(`Environment variable ${key} must be a valid number`);
+  }
+
+  return parsed;
+};
+
+const getRequiredBoolean = (
+  configService: ConfigService,
+  key: string,
+): boolean => {
+  const value = getRequiredEnv(configService, key).toLowerCase();
+
+  if (value === 'true') {
+    return true;
+  }
+
+  if (value === 'false') {
+    return false;
+  }
+
+  throw new Error(
+    `Environment variable ${key} must be either "true" or "false"`,
+  );
+};
+
+const parseOriginList = (
+  configService: ConfigService,
+  key: string,
+): string[] => {
+  const value = getRequiredEnv(configService, key);
   const parsed = value
     .split(',')
     .map((origin) => origin.trim())
     .filter(Boolean);
 
-  return parsed.length ? parsed : fallback;
+  if (!parsed.length) {
+    throw new Error(
+      `Environment variable ${key} must contain at least one origin`,
+    );
+  }
+
+  return parsed;
 };
 
 @Module({
@@ -33,48 +78,48 @@ const parseOriginList = (
     }),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
-      useFactory: (configService: ConfigService) => ({
-        uri: configService.get<string>('MONGO_URI'),
-      }),
+      useFactory: (configService: ConfigService) => {
+        const mongoUri = getRequiredEnv(configService, 'MONGO_URI');
+        return {
+          uri: mongoUri,
+        };
+      },
       inject: [ConfigService],
     }),
     AuthModule.forRootAsync({
       useFactory: (connection: Connection, configService: ConfigService) => {
-        const smtpPort = configService.get<number>('SMTP_PORT') || 587;
-        const smtpSecure = smtpPort === 465; // Port 465 uses SSL, port 587 uses STARTTLS
-        const defaultOrigins = ['http://localhost:4000'];
+        const smtpPort = getRequiredNumber(configService, 'SMTP_PORT');
+        const smtpSecure = getRequiredBoolean(configService, 'SMTP_SECURE');
         const trustedOrigins = parseOriginList(
-          configService.get<string>('TRUSTED_ORIGINS'),
-          defaultOrigins,
+          configService,
+          'TRUSTED_ORIGINS',
         );
-        const corsOrigins = parseOriginList(
-          configService.get<string>('CORS_ORIGINS'),
-          defaultOrigins,
-        );
+        const corsOrigins = parseOriginList(configService, 'CORS_ORIGINS');
 
         return {
           auth: createAuthConfig(
             connection,
             {
-              host: configService.get<string>('SMTP_HOST')!,
+              host: getRequiredEnv(configService, 'SMTP_HOST'),
               port: smtpPort,
               secure: smtpSecure,
-              requireTLS: !smtpSecure, // Use STARTTLS for port 587
+              requireTLS: !smtpSecure,
               auth: {
-                user: configService.get<string>('SMTP_USER')!,
-                pass: configService.get<string>('SMTP_PASS')!,
+                user: getRequiredEnv(configService, 'SMTP_USER'),
+                pass: getRequiredEnv(configService, 'SMTP_PASS'),
               },
               tls: {
-                rejectUnauthorized:
-                  configService.get<boolean>('SMTP_REJECT_UNAUTHORIZED') !==
-                  false,
+                rejectUnauthorized: getRequiredBoolean(
+                  configService,
+                  'SMTP_REJECT_UNAUTHORIZED',
+                ),
               },
             },
-            configService.get<string>('EMAIL_FROM')!,
-            configService.get<string>('BASE_URL') || 'http://localhost:3000',
-            configService.get<string>('VERIFICATION_CALLBACK_URL') || '/',
-            configService.get<string>('GOOGLE_CLIENT_ID')!,
-            configService.get<string>('GOOGLE_CLIENT_SECRET')!,
+            getRequiredEnv(configService, 'EMAIL_FROM'),
+            getRequiredEnv(configService, 'BASE_URL'),
+            getRequiredEnv(configService, 'VERIFICATION_CALLBACK_URL'),
+            getRequiredEnv(configService, 'GOOGLE_CLIENT_ID'),
+            getRequiredEnv(configService, 'GOOGLE_CLIENT_SECRET'),
             trustedOrigins,
             corsOrigins,
           ),
