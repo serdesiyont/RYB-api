@@ -11,8 +11,6 @@ export const createAuthConfig = (
   verificationCallbackUrl: string,
   googleClientId: string,
   googleClientSecret: string,
-  trustedOrigins: string[],
-  corsOrigins: string[],
 ) => {
   return betterAuth({
     rateLimit: {
@@ -24,9 +22,9 @@ export const createAuthConfig = (
       },
     },
     baseURL: baseUrl,
-    trustedOrigins,
+    trustedOrigins: ['*'],
     cors: {
-      origin: corsOrigins,
+      origin: true,
       credentials: true,
     },
     database: mongodbAdapter(connection.db!),
@@ -36,18 +34,18 @@ export const createAuthConfig = (
     },
     emailVerification: {
       sendOnSignUp: true,
-      sendVerificationEmail: async ({ user, token }) => {
+      sendVerificationEmail: ({ user, token }) => {
         // Construct the verification URL with token and callback URL
         const encodedCallbackURL = encodeURIComponent(verificationCallbackUrl);
         const verificationUrl = `${baseUrl}/api/auth/verify-email?token=${token}&callbackURL=${encodedCallbackURL}`;
 
         // don't await the sendEmail function, trust me bro
-        sendEmail({
+        return sendEmail({
           smtpConfig,
           from: emailFrom,
           to: user.email,
           url: verificationUrl,
-        });
+        }).then(() => undefined);
       },
       autoSignInAfterVerification: true,
     },
@@ -56,6 +54,7 @@ export const createAuthConfig = (
         clientId: googleClientId,
         clientSecret: googleClientSecret,
         redirectURI: `${baseUrl}/api/auth/callback/google`,
+
       },
     },
   });

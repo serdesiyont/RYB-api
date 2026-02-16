@@ -52,25 +52,6 @@ const getRequiredBoolean = (
   );
 };
 
-const parseOriginList = (
-  configService: ConfigService,
-  key: string,
-): string[] => {
-  const value = getRequiredEnv(configService, key);
-  const parsed = value
-    .split(',')
-    .map((origin) => origin.trim())
-    .filter(Boolean);
-
-  if (!parsed.length) {
-    throw new Error(
-      `Environment variable ${key} must contain at least one origin`,
-    );
-  }
-
-  return parsed;
-};
-
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -90,11 +71,6 @@ const parseOriginList = (
       useFactory: (connection: Connection, configService: ConfigService) => {
         const smtpPort = getRequiredNumber(configService, 'SMTP_PORT');
         const smtpSecure = getRequiredBoolean(configService, 'SMTP_SECURE');
-        const trustedOrigins = parseOriginList(
-          configService,
-          'TRUSTED_ORIGINS',
-        );
-        const corsOrigins = parseOriginList(configService, 'CORS_ORIGINS');
 
         return {
           auth: createAuthConfig(
@@ -120,8 +96,6 @@ const parseOriginList = (
             getRequiredEnv(configService, 'VERIFICATION_CALLBACK_URL'),
             getRequiredEnv(configService, 'GOOGLE_CLIENT_ID'),
             getRequiredEnv(configService, 'GOOGLE_CLIENT_SECRET'),
-            trustedOrigins,
-            corsOrigins,
           ),
         };
       },
