@@ -1,11 +1,11 @@
 import { betterAuth } from 'better-auth';
 import { mongodbAdapter } from 'better-auth/adapters/mongodb';
 import type { Connection } from 'mongoose';
-import { SmtpConfig, sendEmail } from './email';
+import { GmailConfig, sendEmailWithGmail } from './email';
 
 export const createAuthConfig = (
   connection: Connection,
-  smtpConfig: SmtpConfig,
+  gmailConfig: GmailConfig,
   emailFrom: string,
   baseUrl: string,
   verificationCallbackUrl: string,
@@ -39,9 +39,9 @@ export const createAuthConfig = (
         const encodedCallbackURL = encodeURIComponent(verificationCallbackUrl);
         const verificationUrl = `${baseUrl}/api/auth/verify-email?token=${token}&callbackURL=${encodedCallbackURL}`;
 
-        // don't await the sendEmail function, trust me bro
-        return sendEmail({
-          smtpConfig,
+        // Send email using Gmail API
+        return sendEmailWithGmail({
+          gmailConfig,
           from: emailFrom,
           to: user.email,
           url: verificationUrl,
@@ -54,7 +54,6 @@ export const createAuthConfig = (
         clientId: googleClientId,
         clientSecret: googleClientSecret,
         redirectURI: `${baseUrl}/api/auth/callback/google`,
-
       },
     },
   });
