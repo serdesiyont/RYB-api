@@ -22,7 +22,10 @@ export const createAuthConfig = (
       },
     },
     baseURL: baseUrl,
-    trustedOrigins: ['*'],
+    trustedOrigins: [
+      'https://rate-your-professor.vercel.app',
+      'http://localhost:4000',
+    ],
     cors: {
       origin: true,
       credentials: true,
